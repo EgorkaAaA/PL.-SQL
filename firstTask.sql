@@ -114,3 +114,25 @@ create table LEBEDEV_EG.patient_document(
     id_document number references LEBEDEV_EG.document(id_document) not null,
     primary key (id_patient,id_document)
 );
+
+create table LEBEDEV_EG.account (
+    id_patient number references LEBEDEV_EG.patient(id_patient) not null,
+    id_talon number references LEBEDEV_EG.doctor_timetable(ID_TIMETABLE) not null,
+    primary key (id_patient,id_talon),
+    available number (1,0) not null
+);
+
+--Работа над ошибками
+alter table hospital
+    add id_medical_organization number references LEBEDEV_EG.MEDICAL_ORGANIZATION(ID_MEDICAL_ORGANIZATION) not null;
+alter table hospital
+    add id_hospital_tape number references LEBEDEV_EG.hospital_tape(ID_HOSPITAL_TAPE) not null;
+alter table hospital_timetable
+    modify id_hospital  not null;
+create table doctor_speciality (
+    id_doctor number references LEBEDEV_EG.doctor(ID_DOCTOR) not null,
+    id_speciality number references LEBEDEV_EG.SPECIALITY(ID_SPECIALITY) not null,
+    primary key(id_doctor,id_speciality)
+);
+
+
