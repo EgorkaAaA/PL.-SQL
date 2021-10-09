@@ -129,10 +129,9 @@ alter table hospital
     add id_hospital_tape number references LEBEDEV_EG.hospital_tape(ID_HOSPITAL_TAPE) not null;
 alter table hospital_timetable
     modify id_hospital  not null;
-create table doctor_speciality (
+
+create table LEBEDEV_EG.doctor_speciality (
     id_doctor number references LEBEDEV_EG.doctor(ID_DOCTOR) not null,
     id_speciality number references LEBEDEV_EG.SPECIALITY(ID_SPECIALITY) not null,
     primary key(id_doctor,id_speciality)
 );
-
-
