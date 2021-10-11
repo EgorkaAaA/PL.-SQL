@@ -1,0 +1,3 @@
+select C.CITY_NAME, NAME_REGION
+from CITY C
+inner join REGION R on R.ID_REGION = C.ID_REGION;
