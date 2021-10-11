@@ -135,3 +135,5 @@ create table LEBEDEV_EG.doctor_speciality (
     id_speciality number references LEBEDEV_EG.SPECIALITY(ID_SPECIALITY) not null,
     primary key(id_doctor,id_speciality)
 );
+
+
