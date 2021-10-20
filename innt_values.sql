@@ -51,35 +51,59 @@ values ('Государтвенная'); --1
 insert into LEBEDEV_EG.HOSPITAL_TAPE(NAME_HOSPITAL_TAPE)
 values ('Частная'); --2
 
-insert into LEBEDEV_EG.DOCUMENT(NAME_DOCUMENT)
-values ('Свидетельство о рождении'); --1
-insert into LEBEDEV_EG.DOCUMENT(NAME_DOCUMENT)
-values ('Паспорт'); --2
-insert into LEBEDEV_EG.DOCUMENT(NAME_DOCUMENT)
-values ('Снилс'); --3
-insert into LEBEDEV_EG.DOCUMENT(NAME_DOCUMENT)
-values ('Медицинский полис'); --4
-
-insert into LEBEDEV_EG.SPECIALITY(NAME_SPECIALITY, AGE_GROUP, SEX, DELETED)
-values ('Педиатр',8,5,null); --1
-insert into LEBEDEV_EG.SPECIALITY(NAME_SPECIALITY, AGE_GROUP, SEX, DELETED)
-values ('Врач для мальчиков от 0 до 3 лет',1,1,null); --2
-insert into LEBEDEV_EG.SPECIALITY(NAME_SPECIALITY, AGE_GROUP, SEX, DELETED)
-values ('Врач для девочек от 4 до 6 лет',2,2,null); --3
-insert into LEBEDEV_EG.SPECIALITY(NAME_SPECIALITY, AGE_GROUP, SEX, DELETED)
-values ('Врач для детей от 6 до 10 лет',3,5,sysdate);
-insert into LEBEDEV_EG.SPECIALITY(NAME_SPECIALITY, AGE_GROUP, SEX, DELETED)
-values ('Врач для детей от 10 до 17 лет',4,5,null);
-insert into LEBEDEV_EG.SPECIALITY(NAME_SPECIALITY, AGE_GROUP, SEX, DELETED)
-values ('Врач для молодежи мужчин',5,1,null);
-insert into LEBEDEV_EG.SPECIALITY(NAME_SPECIALITY, AGE_GROUP, SEX, DELETED)
-values ('Врач для женщин средних лет',6,5,null);
-insert into LEBEDEV_EG.SPECIALITY(NAME_SPECIALITY, AGE_GROUP, SEX, DELETED)
-values ('Врач для детей панзерваустов',1,3,null);
-insert into LEBEDEV_EG.SPECIALITY(NAME_SPECIALITY, AGE_GROUP, SEX, DELETED)
-values ('Врач для всех',9,5,null);
-insert into LEBEDEV_EG.SPECIALITY(NAME_SPECIALITY, AGE_GROUP, SEX, DELETED)
-values ('Педиатр для атакующих вертолетов',9,4, to_date('2012-10-11 09:15:34', 'yyyy/mm/dd hh24:mi:ss'));
+select * from SPECIALITY;
+insert into LEBEDEV_EG.SPECIALITY(NAME_SPECIALITY, ID_AGE_GROUP,  DELETED)
+values ('Педиатр',8,null); --1
+insert into LEBEDEV_EG.SPECIALITY_SEX(ID_SPECIALITY, ID_SEX)
+values (1,1);
+insert into LEBEDEV_EG.SPECIALITY_SEX(ID_SPECIALITY, ID_SEX)
+values (1,2);
+insert into LEBEDEV_EG.SPECIALITY(NAME_SPECIALITY, ID_AGE_GROUP,  DELETED)
+values ('Врач для мальчиков от 0 до 3 лет',1,null); --2
+insert into LEBEDEV_EG.SPECIALITY_SEX(ID_SPECIALITY, ID_SEX)
+values (2,1);
+insert into LEBEDEV_EG.SPECIALITY(NAME_SPECIALITY, ID_AGE_GROUP, DELETED)
+values ('Врач для девочек от 4 до 6 лет',2,null); --3
+insert into LEBEDEV_EG.SPECIALITY_SEX(ID_SPECIALITY, ID_SEX)
+values (3,2);
+insert into LEBEDEV_EG.SPECIALITY(NAME_SPECIALITY, ID_AGE_GROUP,  DELETED)
+values ('Врач для детей от 6 до 10 лет',3,sysdate);
+insert into LEBEDEV_EG.SPECIALITY_SEX(ID_SPECIALITY, ID_SEX)
+values (4,1);
+insert into LEBEDEV_EG.SPECIALITY_SEX(ID_SPECIALITY, ID_SEX)
+values (4,2);
+insert into LEBEDEV_EG.SPECIALITY(NAME_SPECIALITY, ID_AGE_GROUP,  DELETED)
+values ('Врач для детей от 10 до 17 лет',4,null);
+insert into LEBEDEV_EG.SPECIALITY_SEX(ID_SPECIALITY, ID_SEX)
+values (5,1);
+insert into LEBEDEV_EG.SPECIALITY_SEX(ID_SPECIALITY, ID_SEX)
+values (5,2);
+insert into LEBEDEV_EG.SPECIALITY(NAME_SPECIALITY, ID_AGE_GROUP,  DELETED)
+values ('Врач для молодежи мужчин',5,null);
+insert into LEBEDEV_EG.SPECIALITY_SEX(ID_SPECIALITY, ID_SEX)
+values (6,1);
+insert into LEBEDEV_EG.SPECIALITY(NAME_SPECIALITY, ID_AGE_GROUP,  DELETED)
+values ('Врач для женщин средних лет',6,null);
+insert into LEBEDEV_EG.SPECIALITY_SEX(ID_SPECIALITY, ID_SEX)
+values (7,2);
+insert into LEBEDEV_EG.SPECIALITY(NAME_SPECIALITY,ID_AGE_GROUP,  DELETED)
+values ('Врач для детей панзерваустов',1,null);
+insert into LEBEDEV_EG.SPECIALITY_SEX(ID_SPECIALITY, ID_SEX)
+values (8,3);
+insert into LEBEDEV_EG.SPECIALITY(NAME_SPECIALITY,ID_AGE_GROUP,  DELETED)
+values ('Врач для всех',9,null);
+insert into LEBEDEV_EG.SPECIALITY_SEX(ID_SPECIALITY, ID_SEX)
+values (9,1);
+insert into LEBEDEV_EG.SPECIALITY_SEX(ID_SPECIALITY, ID_SEX)
+values (9,2);
+insert into LEBEDEV_EG.SPECIALITY_SEX(ID_SPECIALITY, ID_SEX)
+values (9,3);
+insert into LEBEDEV_EG.SPECIALITY_SEX(ID_SPECIALITY, ID_SEX)
+values (9,4);
+insert into LEBEDEV_EG.SPECIALITY(NAME_SPECIALITY, ID_AGE_GROUP, DELETED)
+values ('Педиатр для атакующих вертолетов',9, to_date('2012-10-11 09:15:34', 'yyyy/mm/dd hh24:mi:ss'));
+insert into LEBEDEV_EG.SPECIALITY_SEX(ID_SPECIALITY, ID_SEX)
+values (12,4);
 
 
 insert into LEBEDEV_EG.REGION (NAME_REGION)
@@ -102,6 +126,60 @@ values ('Инвитро');
 insert into MEDICAL_ORGANIZATION (NAME_MEDICAL_ORGANIZATION)
 values ('Медлайн');
 insert into MEDICAL_ORGANIZATION (NAME_MEDICAL_ORGANIZATION)
-values ('Государственная');
+values ('Лучшая');
 insert into MEDICAL_ORGANIZATION (NAME_MEDICAL_ORGANIZATION)
-values ('Государственная');
+values ('Худшая');
+
+insert into LEBEDEV_EG.HOSPITAL(NAME_HOSPITAL, IS_OPEN, DELETED, ID_MEDICAL_ORGANIZATION, ID_HOSPITAL_TAPE)
+VALUES ('Областная больница №1', 1, null, 1,1);
+insert into LEBEDEV_EG.HOSPITAL(NAME_HOSPITAL, IS_OPEN, DELETED, ID_MEDICAL_ORGANIZATION, ID_HOSPITAL_TAPE)
+VALUES ('Областная больница №2', 1, sysdate, 1,1);
+insert into LEBEDEV_EG.HOSPITAL(NAME_HOSPITAL, IS_OPEN, DELETED, ID_MEDICAL_ORGANIZATION, ID_HOSPITAL_TAPE)
+VALUES ('Инвитро №1', 1, null, 2,2);
+insert into LEBEDEV_EG.HOSPITAL(NAME_HOSPITAL, IS_OPEN, DELETED, ID_MEDICAL_ORGANIZATION, ID_HOSPITAL_TAPE)
+VALUES ('Медлайн №1', 1, null, 3,2);
+insert into LEBEDEV_EG.HOSPITAL(NAME_HOSPITAL, IS_OPEN, DELETED, ID_MEDICAL_ORGANIZATION, ID_HOSPITAL_TAPE)
+VALUES ('Областная больница №1', 1, null, 4,2);
+insert into LEBEDEV_EG.HOSPITAL(NAME_HOSPITAL, IS_OPEN, DELETED, ID_MEDICAL_ORGANIZATION, ID_HOSPITAL_TAPE)
+VALUES ('Областная больница №1', 0, null, 5,1);
+
+insert into LEBEDEV_EG.DOCTOR(ID_HOSPITAL, AREA, QUALIFICATION, DELETED)
+VALUES (1,10,'Что-то квалифицированное',null);
+insert into LEBEDEV_EG.DOCTOR(ID_HOSPITAL, AREA, QUALIFICATION, DELETED)
+VALUES (1,20,'Что-то квалифицированное',sysdate);
+insert into LEBEDEV_EG.DOCTOR(ID_HOSPITAL, AREA, QUALIFICATION, DELETED)
+VALUES (1,30,'Что-то квалифицированное',null);
+insert into LEBEDEV_EG.DOCTOR(ID_HOSPITAL, AREA, QUALIFICATION, DELETED)
+VALUES (1,40,'Что-то квалифицированное',null);
+insert into LEBEDEV_EG.DOCTOR(ID_HOSPITAL, AREA, QUALIFICATION, DELETED)
+VALUES (2,50,'Что-то квалифицированное',null);
+insert into LEBEDEV_EG.DOCTOR(ID_HOSPITAL, AREA, QUALIFICATION, DELETED)
+VALUES (2,10,'Что-то квалифицированное',null);
+
+insert into LEBEDEV_EG.HOSPITAL_TIMETABLE(ID_HOSPITAL, ID_DAY, START_WORK_TIME, FINISH_WORK_TIME)
+VALUES (1,2, to_date('08:00','hh24:MI'),sysdate);
+insert into LEBEDEV_EG.HOSPITAL_TIMETABLE(ID_HOSPITAL, ID_DAY, START_WORK_TIME, FINISH_WORK_TIME)
+VALUES (1,3, to_date('08:00','hh24:MI'),sysdate);
+insert into LEBEDEV_EG.HOSPITAL_TIMETABLE(ID_HOSPITAL, ID_DAY, START_WORK_TIME, FINISH_WORK_TIME)
+VALUES (1,4, to_date('08:00','hh24:MI'),sysdate);
+insert into LEBEDEV_EG.HOSPITAL_TIMETABLE(ID_HOSPITAL, ID_DAY, START_WORK_TIME, FINISH_WORK_TIME)
+VALUES (1,5, to_date('08:00','hh24:MI'),sysdate);
+insert into LEBEDEV_EG.HOSPITAL_TIMETABLE(ID_HOSPITAL, ID_DAY, START_WORK_TIME, FINISH_WORK_TIME)
+VALUES (1,6, to_date('08:00','hh24:MI'),sysdate);
+insert into LEBEDEV_EG.HOSPITAL_TIMETABLE(ID_HOSPITAL, ID_DAY, START_WORK_TIME, FINISH_WORK_TIME)
+VALUES (1,7, to_date('08:00','hh24:MI'),sysdate);
+insert into LEBEDEV_EG.HOSPITAL_TIMETABLE(ID_HOSPITAL, ID_DAY, START_WORK_TIME, FINISH_WORK_TIME)
+VALUES (1,8, to_date('08:00','hh24:MI'),sysdate);
+
+
+insert into LEBEDEV_EG.DOCTOR_SPECIALITY(ID_DOCTOR, ID_SPECIALITY)
+VALUES (1,2);
+insert into LEBEDEV_EG.DOCTOR_SPECIALITY(ID_DOCTOR, ID_SPECIALITY)
+VALUES (2,3);
+
+insert into LEBEDEV_EG.DOCTOR_SPECIALITY(ID_DOCTOR, ID_SPECIALITY)
+VALUES (3,4);
+insert into LEBEDEV_EG.DOCTOR_SPECIALITY(ID_DOCTOR, ID_SPECIALITY)
+VALUES (4,3);
+insert into LEBEDEV_EG.DOCTOR_SPECIALITY(ID_DOCTOR, ID_SPECIALITY)
+VALUES (2,2);
