@@ -50,8 +50,17 @@ begin
 end;
 
 --2.5
-
-
+select * from LEBEDEV_EG.MEDICAL_ORGANIZATION;
+declare
+    v_date date;
+    v_id_hospital number;
+begin
+    v_date = sysdate;
+    select ID_HOSPITAL into v_id_hospital from HOSPITAL where DELETED = v_date;
+    DBMS_OUTPUT.PUT_LINE(v_id_hospital);
+    select ID_HOSPITAL into v_id_hospital from HOSPITAL where DELETED between v_date and v_date - 7;
+    DBMS_OUTPUT.PUT_LINE(v_id_hospital);
+end;
 --2.6
 declare
     v_city LEBEDEV_EG.city%rowtype;
