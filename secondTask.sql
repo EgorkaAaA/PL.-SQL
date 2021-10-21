@@ -20,9 +20,13 @@ on DS.ID_DOCTOR = D.ID_DOCTOR
 where DS.ID_SPECIALITY = 2 and H.DELETED is null and D.DELETED is null
 order by H.ID_HOSPITAL_TAPE,H.IS_OPEN desc;--, count(D.ID_DOCTOR),
 --4
-
-
-
+select * from DOCTOR D
+where D.ID_HOSPITAL = 1
+order by d.QUALIFICATION;
+--5
+select * from LEBEDEV_EG.DOCTOR_TIMETABLE dt
+where dt.ID_DOCTOR = 1 and dt.TIME_SPACES_TO < sysdate;
+--6
 
 
 
