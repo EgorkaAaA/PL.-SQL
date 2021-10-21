@@ -67,7 +67,7 @@ declare
     v_city arr_type;
     v_iterator binary_integer;
 begin
-    select * into v_city from CITY where ID_CITY = 2;
+    select * bulk collect into v_city from CITY ;
     v_iterator:= v_city.FIRST;
     while v_iterator <> v_city.LAST
     loop
