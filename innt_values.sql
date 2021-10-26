@@ -51,6 +51,8 @@ values ('Государтвенная'); --1
 insert into LEBEDEV_EG.HOSPITAL_TAPE(NAME_HOSPITAL_TAPE)
 values ('Частная'); --2
 
+UPDATE LEBEDEV_EG.HOSPITAL_TAPE set NAME_HOSPITAL_TAPE = 'Государственная' where ID_HOSPITAL_TAPE =1;
+
 select * from SPECIALITY;
 insert into LEBEDEV_EG.SPECIALITY(NAME_SPECIALITY, ID_AGE_GROUP,  DELETED)
 values ('Педиатр',8,null); --1
@@ -118,30 +120,97 @@ insert into CITY (CITY_NAME, ID_REGION)
 values ('Прокопьевск', 1);
 insert into CITY (CITY_NAME, ID_REGION)
 values ('Белово', 1);
-
-insert into MEDICAL_ORGANIZATION (NAME_MEDICAL_ORGANIZATION)
-values ('Государственная');
-insert into MEDICAL_ORGANIZATION (NAME_MEDICAL_ORGANIZATION)
-values ('Инвитро');
-insert into MEDICAL_ORGANIZATION (NAME_MEDICAL_ORGANIZATION)
-values ('Медлайн');
-insert into MEDICAL_ORGANIZATION (NAME_MEDICAL_ORGANIZATION)
-values ('Лучшая');
-insert into MEDICAL_ORGANIZATION (NAME_MEDICAL_ORGANIZATION)
-values ('Худшая');
-
-insert into LEBEDEV_EG.HOSPITAL(NAME_HOSPITAL, IS_OPEN, DELETED, ID_MEDICAL_ORGANIZATION, ID_HOSPITAL_TAPE)
-VALUES ('Областная больница №1', 1, null, 1,1);
-insert into LEBEDEV_EG.HOSPITAL(NAME_HOSPITAL, IS_OPEN, DELETED, ID_MEDICAL_ORGANIZATION, ID_HOSPITAL_TAPE)
-VALUES ('Областная больница №2', 1, sysdate, 1,1);
-insert into LEBEDEV_EG.HOSPITAL(NAME_HOSPITAL, IS_OPEN, DELETED, ID_MEDICAL_ORGANIZATION, ID_HOSPITAL_TAPE)
-VALUES ('Инвитро №1', 1, null, 2,2);
-insert into LEBEDEV_EG.HOSPITAL(NAME_HOSPITAL, IS_OPEN, DELETED, ID_MEDICAL_ORGANIZATION, ID_HOSPITAL_TAPE)
-VALUES ('Медлайн №1', 1, null, 3,2);
-insert into LEBEDEV_EG.HOSPITAL(NAME_HOSPITAL, IS_OPEN, DELETED, ID_MEDICAL_ORGANIZATION, ID_HOSPITAL_TAPE)
-VALUES ('Областная больница №1', 1, null, 4,2);
-insert into LEBEDEV_EG.HOSPITAL(NAME_HOSPITAL, IS_OPEN, DELETED, ID_MEDICAL_ORGANIZATION, ID_HOSPITAL_TAPE)
-VALUES ('Областная больница №1', 0, null, 5,1);
+commit ;
+select * from HOSPITAL;
+declare
+    v_id_med_org number;
+    v_is_open number;
+    v_deleted date;
+    cursor select_id_hospital (
+        v_hosp_tape_name in varchar2
+        ) is
+    select ID_HOSPITAL_TAPE from LEBEDEV_EG.HOSPITAL_TAPE
+        where NAME_HOSPITAL_TAPE = v_hosp_tape_name;
+    v_id_hosp_tape LEBEDEV_EG.HOSPITAL_TAPE.ID_HOSPITAL_TAPE%type;
+begin
+    open select_id_hospital('Государтвенная');
+    insert into MEDICAL_ORGANIZATION (NAME_MEDICAL_ORGANIZATION)
+    values ('Государтвенная')
+    returning ID_MEDICAL_ORGANIZATION into v_id_med_org;
+    for i in 1..20
+    loop
+        if mod(i,3) = 0 then v_is_open := 0;
+        else v_is_open := 1;
+        end if;
+        if mod(i,5) = 0 then v_deleted := sysdate;
+        else v_deleted := null; DBMS_OUTPUT.PUT_LINE('tyt');
+        end if;
+        fetch select_id_hospital into v_id_hosp_tape;
+        DBMS_OUTPUT.PUT_LINE(v_id_hosp_tape);
+        insert into LEBEDEV_EG.HOSPITAL(NAME_HOSPITAL, IS_OPEN, DELETED, ID_MEDICAL_ORGANIZATION, ID_HOSPITAL_TAPE)
+        values ('Поликлиника №'||i, v_is_open,null,v_id_med_org,v_id_hosp_tape);
+        end loop;
+     insert into MEDICAL_ORGANIZATION (NAME_MEDICAL_ORGANIZATION)
+    values ('Лучшая')
+    returning ID_MEDICAL_ORGANIZATION into v_id_med_org;
+    for i in 1..20
+    loop
+        if mod(i,3) = 0 then v_is_open := 0;
+        else v_is_open := 1;
+        end if;
+        if mod(i,5) = 0 then v_deleted := sysdate;
+        else v_deleted := null;
+        end if;
+        insert into LEBEDEV_EG.HOSPITAL(NAME_HOSPITAL, IS_OPEN, DELETED, ID_MEDICAL_ORGANIZATION, ID_HOSPITAL_TAPE)
+        values ('Больница №'||i, v_is_open,v_deleted,v_id_med_org, v_id_hosp_tape);
+        end loop;
+    insert into MEDICAL_ORGANIZATION (NAME_MEDICAL_ORGANIZATION)
+    values ('Худшая')
+    returning ID_MEDICAL_ORGANIZATION into v_id_med_org;
+    for i in 1..20
+    loop
+        if mod(i,3) = 0 then v_is_open := 0;
+        else v_is_open := 1;
+        end if;
+        if mod(i,5) = 0 then v_deleted := sysdate;
+        else v_deleted := null;
+        end if;
+        insert into LEBEDEV_EG.HOSPITAL(NAME_HOSPITAL, IS_OPEN, DELETED, ID_MEDICAL_ORGANIZATION, ID_HOSPITAL_TAPE)
+        values ('Диспансер №'||i, v_is_open,v_deleted,v_id_med_org, v_id_hosp_tape);
+        end loop;
+    close select_id_hospital;
+    open select_id_hospital('Частная');
+    fetch select_id_hospital into v_id_hosp_tape;
+    insert into MEDICAL_ORGANIZATION (NAME_MEDICAL_ORGANIZATION)
+    values ('Инвитро')
+    returning ID_MEDICAL_ORGANIZATION into v_id_med_org;
+    for i in 1..20
+    loop
+        if mod(i,3) = 0 then v_is_open := 0;
+        else v_is_open := 1;
+        end if;
+        if mod(i,5) = 0 then v_deleted := sysdate;
+        else v_deleted := null;
+        end if;
+        insert into LEBEDEV_EG.HOSPITAL(NAME_HOSPITAL, IS_OPEN, DELETED, ID_MEDICAL_ORGANIZATION, ID_HOSPITAL_TAPE)
+        values ('Инвитро №'||i, v_is_open,v_deleted,v_id_med_org,v_id_hosp_tape);
+        end loop;
+    insert into MEDICAL_ORGANIZATION (NAME_MEDICAL_ORGANIZATION)
+    values ('Медлайн')
+    returning ID_MEDICAL_ORGANIZATION into v_id_med_org;
+    for i in 1..20
+    loop
+        if mod(i,3) = 0 then v_is_open := 0;
+        else v_is_open := 1;
+        end if;
+        if mod(i,5) = 0 then v_deleted := sysdate;
+        else v_deleted := null;
+        end if;
+        insert into LEBEDEV_EG.HOSPITAL(NAME_HOSPITAL, IS_OPEN, DELETED, ID_MEDICAL_ORGANIZATION, ID_HOSPITAL_TAPE)
+        values ('Поликлиника №'||i, v_is_open,v_deleted,v_id_med_org, v_id_hosp_tape);
+        end loop;
+    close select_id_hospital;
+end;
 
 insert into LEBEDEV_EG.DOCTOR(ID_HOSPITAL, AREA, QUALIFICATION, DELETED)
 VALUES (1,10,'Что-то квалифицированное',null);
@@ -155,6 +224,39 @@ insert into LEBEDEV_EG.DOCTOR(ID_HOSPITAL, AREA, QUALIFICATION, DELETED)
 VALUES (2,50,'Что-то квалифицированное',null);
 insert into LEBEDEV_EG.DOCTOR(ID_HOSPITAL, AREA, QUALIFICATION, DELETED)
 VALUES (2,10,'Что-то квалифицированное',null);
+
+select * from SPECIALITY;
+select * from HOSPITAL;
+select count(DOCTOR.ID_DOCTOR) as COUNT from DOCTOR ;
+select count(DOCTOR_SPECIALITY.ID_DOCTOR) as count from DOCTOR_SPECIALITY;
+commit ;
+declare
+    v_deleted date;
+    v_id_doctor number;
+    v_id_speciality number;
+    v_id_hosp number;
+    v_area number;
+    v_qualif varchar2(100);
+begin
+    for i in 1..1300
+    loop
+        if mod(i,5) = 0 then v_deleted := sysdate;
+        else v_deleted:= null;
+        end if;
+        v_id_hosp := round(DBMS_RANDOM.VALUE(19,118));
+        v_area := round(DBMS_RANDOM.VALUE(0,100));
+        v_qualif := dbms_random.string('U', 10);
+        insert into LEBEDEV_EG.DOCTOR(ID_HOSPITAL, AREA, QUALIFICATION, DELETED)
+            values (v_id_hosp,v_area,v_qualif, v_deleted)
+        returning ID_DOCTOR into v_id_doctor;
+        loop
+            v_id_speciality := round(DBMS_RANDOM.VALUE(1,22));
+            exit when v_id_speciality <= 9 or v_id_speciality >= 12;
+        end loop;
+        insert into LEBEDEV_EG.DOCTOR_SPECIALITY(ID_DOCTOR, ID_SPECIALITY)
+            values (v_id_doctor, v_id_speciality);
+        end loop;
+end;
 
 insert into LEBEDEV_EG.HOSPITAL_TIMETABLE(ID_HOSPITAL, ID_DAY, START_WORK_TIME, FINISH_WORK_TIME)
 VALUES (1,2, to_date('08:00','hh24:MI'),sysdate);
@@ -183,3 +285,7 @@ insert into LEBEDEV_EG.DOCTOR_SPECIALITY(ID_DOCTOR, ID_SPECIALITY)
 VALUES (4,3);
 insert into LEBEDEV_EG.DOCTOR_SPECIALITY(ID_DOCTOR, ID_SPECIALITY)
 VALUES (2,2);
+
+
+insert into LEBEDEV_EG.PATIENT(SURNAME, NAME, PATRONYMIC, ID_SEX, PHONE, AREA)
+values

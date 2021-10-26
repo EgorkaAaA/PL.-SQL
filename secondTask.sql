@@ -11,21 +11,30 @@ on DS.ID_DOCTOR = D.ID_DOCTOR
 inner join LEBEDEV_EG.HOSPITAL H
 on H.ID_HOSPITAL = D.ID_HOSPITAL
 WHERE S.DELETED is null and D.DELETED is null and H.DELETED is null;
---3
-SELECT H.* from HOSPITAL H
+--3 *Исправил
+SELECT count(D.ID_DOCTOR) as count, H.*  from HOSPITAL H
 inner join LEBEDEV_EG.DOCTOR D
 on H.ID_HOSPITAL = D.ID_HOSPITAL
 inner join LEBEDEV_EG.DOCTOR_SPECIALITY DS
 on DS.ID_DOCTOR = D.ID_DOCTOR
 where DS.ID_SPECIALITY = 2 and H.DELETED is null and D.DELETED is null
-order by H.ID_HOSPITAL_TAPE,H.IS_OPEN desc;--, count(D.ID_DOCTOR),
---4
+group by H.ID_HOSPITAL, H.NAME_HOSPITAL,H.IS_OPEN,h.DELETED,h.ID_MEDICAL_ORGANIZATION,h.ID_HOSPITAL_TAPE
+order by case when H.ID_HOSPITAL_TAPE = (select HT.ID_HOSPITAL_TAPE from HOSPITAL_TAPE HT where HT.NAME_HOSPITAL_TAPE = 'Государственная')
+            then 0
+            else 1
+        end desc,
+         count(D.ID_DOCTOR) desc,
+        H.IS_OPEN desc;
+--4 *Исправил
 select * from DOCTOR D
-where D.ID_HOSPITAL = 1
-order by d.QUALIFICATION;
---5
+where D.DELETED is null and D.ID_HOSPITAL = 34
+order by d.QUALIFICATION,
+         case when D.AREA = 15 then 1
+            else 0
+        end;
+--5 *Вроде исправил
 select * from LEBEDEV_EG.DOCTOR_TIMETABLE dt
-where dt.ID_DOCTOR = 1 and dt.TIME_SPACES_TO < sysdate;
+where dt.ID_DOCTOR = 1 and dt.TIME_SPACES_TO < sysdate and dt.TIME_SPACES_FROM < sysdate;
 --6
 
 
