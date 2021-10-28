@@ -147,6 +147,8 @@ begin
     end if;
 end;
 
+
+--Проблема 
 declare
     cursor1 sys_refcursor;
     type v_record_1 is record(
