@@ -1,40 +1,40 @@
 --1
-select C.CITY_NAME, NAME_REGION
-from CITY C
-inner join REGION R on R.ID_REGION = C.ID_REGION;
+select c.city_name, name_region
+from city c
+inner join region r on r.id_region = c.id_region;
 --2
-select S.NAME_SPECIALITY,S.ID_AGE_GROUP from LEBEDEV_EG.SPECIALITY S
-inner join LEBEDEV_EG.DOCTOR_SPECIALITY DS
-on S.ID_SPECIALITY = DS.ID_SPECIALITY
-inner join DOCTOR D
-on DS.ID_DOCTOR = D.ID_DOCTOR
-inner join LEBEDEV_EG.HOSPITAL H
-on H.ID_HOSPITAL = D.ID_HOSPITAL
-WHERE S.DELETED is null and D.DELETED is null and H.DELETED is null;
---3 *Исправил
-SELECT count(D.ID_DOCTOR) as count, H.*  from HOSPITAL H
-inner join LEBEDEV_EG.DOCTOR D
-on H.ID_HOSPITAL = D.ID_HOSPITAL
-inner join LEBEDEV_EG.DOCTOR_SPECIALITY DS
-on DS.ID_DOCTOR = D.ID_DOCTOR
-where DS.ID_SPECIALITY = 2 and H.DELETED is null and D.DELETED is null
-group by H.ID_HOSPITAL, H.NAME_HOSPITAL,H.IS_OPEN,h.DELETED,h.ID_MEDICAL_ORGANIZATION,h.ID_HOSPITAL_TAPE
-order by case when H.ID_HOSPITAL_TAPE = (select HT.ID_HOSPITAL_TAPE from HOSPITAL_TAPE HT where HT.NAME_HOSPITAL_TAPE = 'Государственная')
+select s.name_speciality,s.id_age_group from lebedev_eg.speciality s
+inner join lebedev_eg.doctor_speciality ds
+on s.id_speciality = ds.id_speciality
+inner join doctor d
+on ds.id_doctor = d.id_doctor
+inner join lebedev_eg.hospital h
+on h.id_hospital = d.id_hospital
+where s.deleted is null and d.deleted is null and h.deleted is null;
+--3 *исправил
+select count(d.id_doctor) as count, h.*  from hospital h
+inner join lebedev_eg.doctor d
+on h.id_hospital = d.id_hospital
+inner join lebedev_eg.doctor_speciality ds
+on ds.id_doctor = d.id_doctor
+where ds.id_speciality = 2 and h.deleted is null and d.deleted is null
+group by h.id_hospital, h.name_hospital,h.is_open,h.deleted,h.id_medical_organization,h.id_hospital_tape
+order by case when h.id_hospital_tape = (select ht.id_hospital_tape from hospital_tape ht where ht.name_hospital_tape = 'государственная')
             then 0
             else 1
         end desc,
-         count(D.ID_DOCTOR) desc,
-        H.IS_OPEN desc;
---4 *Исправил
-select * from DOCTOR D
-where D.DELETED is null and D.ID_HOSPITAL = 34
-order by d.QUALIFICATION,
-         case when D.AREA = 15 then 1
+         count(d.id_doctor) desc,
+        h.is_open desc;
+--4 *исправил
+select * from doctor d
+where d.deleted is null and d.id_hospital = 34
+order by d.qualification,
+         case when d.area = 15 then 1
             else 0
         end;
---5 *Вроде исправил
-select * from LEBEDEV_EG.DOCTOR_TIMETABLE dt
-where dt.ID_DOCTOR = 1 and dt.TIME_SPACES_TO < sysdate and dt.TIME_SPACES_FROM < sysdate;
+--5 *вроде исправил
+select * from lebedev_eg.doctor_timetable dt
+where dt.id_doctor = 1 and dt.time_spaces_to < sysdate and dt.time_spaces_from < sysdate;
 --6
 
 
@@ -44,9 +44,9 @@ declare
     v_string_result varchar2(100);
     v_number_result integer;
 begin
-    select CITY_NAME into v_string_result from CITY where ID_CITY = 1;
-    select ID_CITY into v_number_result from CITY where CITY_NAME = v_string_result;
-    DBMS_OUTPUT.PUT_LINE(v_string_result );
+    select city_name into v_string_result from city where id_city = 1;
+    select id_city into v_number_result from city where city_name = v_string_result;
+    dbms_output.put_line(v_string_result );
 end;
 
 --2.4 ??
@@ -56,44 +56,44 @@ declare
 begin
     v_bool := false;
     if(v_bool)
-        then select ID_CITY into v_int from CITY where CITY_NAME = 'Кемерово';
-        else select ID_REGION into v_int from REGION where NAME_REGION like 'Новосибирская область';
+        then select id_city into v_int from city where city_name = 'кемерово';
+        else select id_region into v_int from region where name_region like 'новосибирская область';
     end if;
-    DBMS_OUTPUT.PUT_LINE(v_int);
+    dbms_output.put_line(v_int);
 end;
 
 --2.5
-select * from LEBEDEV_EG.MEDICAL_ORGANIZATION;
+select * from lebedev_eg.medical_organization;
 declare
     v_date date;
     v_id_hospital number;
 begin
     v_date = sysdate;
-    select ID_HOSPITAL into v_id_hospital from HOSPITAL where DELETED = v_date;
-    DBMS_OUTPUT.PUT_LINE(v_id_hospital);
-    select ID_HOSPITAL into v_id_hospital from HOSPITAL where DELETED between v_date and v_date - 7;
-    DBMS_OUTPUT.PUT_LINE(v_id_hospital);
+    select id_hospital into v_id_hospital from hospital where deleted = v_date;
+    dbms_output.put_line(v_id_hospital);
+    select id_hospital into v_id_hospital from hospital where deleted between v_date and v_date - 7;
+    dbms_output.put_line(v_id_hospital);
 end;
 --2.6
 declare
-    v_city LEBEDEV_EG.city%rowtype;
+    v_city lebedev_eg.city%rowtype;
 begin
-    select * into v_city from CITY where CITY_NAME = 'Кемерово';
-    DBMS_OUTPUT.PUT_LINE(v_city.ID_REGION || '  ' || v_city.CITY_NAME);
+    select * into v_city from city where city_name = 'кемерово';
+    dbms_output.put_line(v_city.id_region || '  ' || v_city.city_name);
 end;
 
 --2.7
 declare
-    type arr_type is table of LEBEDEV_EG.City%rowtype
+    type arr_type is table of lebedev_eg.city%rowtype
     index by binary_integer;
     v_city arr_type;
     v_iterator binary_integer;
 begin
-    select * bulk collect into v_city from CITY ;
-    v_iterator:= v_city.FIRST;
-    while v_iterator <> v_city.LAST
+    select * bulk collect into v_city from city ;
+    v_iterator:= v_city.first;
+    while v_iterator <> v_city.last
     loop
-        DBMS_OUTPUT.PUT_LINE(v_city(v_iterator).CITY_NAME);
-        v_iterator:= v_city.NEXT(v_iterator);
+        dbms_output.put_line(v_city(v_iterator).city_name);
+        v_iterator:= v_city.next(v_iterator);
         end loop;
 end;
