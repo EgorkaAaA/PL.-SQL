@@ -371,12 +371,14 @@ commit;
 SELECT * FROM DOCTOR;
 
 
+begin
+    DBMS_OUTPUT.PUT_LINE(LEBEDEV_EG.GET_DOCTOR_RATING(568));
+end;
 
-select * from lebedev_eg.doctor_timetable dt
-         where
-              (8 is null or dt.id_doctor = 1);
+select * from JOURNAL;
 
---        and       (dt.time_spaces_to < sysdate and dt.time_spaces_from < sysdate);
+select * from DOCTOR_TIMETABLE where ID_DOCTOR= 568;
+select * from PATIENT;
 
-select ID_DOCTOR     from DOCTOR order by ID_DOCTOR
-
+insert into JOURNAL(id_patient, id_talon, available, rating)
+        VALUES (7574,7,1,3);

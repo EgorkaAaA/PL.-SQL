@@ -206,3 +206,9 @@ select P.birthday from PATIENT P;
 begin
     DBMS_OUTPUT.PUT_LINE(sysdate - DBMS_RANDOM.VALUE(0,25550));
 end;
+
+
+alter table journal
+    add rating number null check ( rating >= 0 and rating <= 10);
+
+select * from journal;
