@@ -3,32 +3,38 @@
 -- голова пакета:
 create or replace package lebedev_eg.patient_package
 as
+    -- функция возвращающая возраст определенного пациента
     function select_patient_age_as_func (
         p_id_patient number
     )
     return number;
 
+    -- функция проверяющая записывался ли пациент на этот талон
     function patient_not_registered_on_talon_as_func (
         p_id_patient number,
         p_id_talon number
     )
     return boolean;
 
+    -- функция проверяющая подходит ли возраст этого пациента под возрастную группу специальности
     function patient_age_is_ok_as_func (
         p_id_patient number,
         p_id_talon number
     )
     return boolean;
 
+    -- фунция проверяющая подходит ли пол пациента под пол специальности
     function patient_sex_equals_speciality_sex_as_func (
         p_id_patient number,
         p_id_talon number
     )
     return boolean;
 
+    -- функция возвращающая id омс
     function id_oms
     return number;
 
+    -- функция проверяющая есть ли у пациента омс
     function patient_have_oms_as_func (
         p_id_patient number
     )
