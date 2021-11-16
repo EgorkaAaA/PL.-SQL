@@ -178,10 +178,10 @@ as
 begin
     select count(*)
         into v_talon_is_available
-    from lebedev_eg.doctor_timetable dt
-    where dt.id_timetable = p_id_talon
-            and
-          dt.time_spaces_from > sysdate;
+        from lebedev_eg.doctor_timetable dt
+        where dt.id_timetable = p_id_talon
+                and
+              dt.time_spaces_from > sysdate;
 
     if v_talon_is_available > 0
         then
@@ -191,7 +191,7 @@ begin
     end if;
 end;
 
--- проверка на удаленность докатора
+-- проверка на удаленность доктора
 create or replace function lebedev_eg.doctor_is_deleted_as_func (
     p_id_talon number
 )
@@ -235,7 +235,8 @@ begin
             and
           h.deleted is null;
 
-    if v_hospital_is_available > 0
+    if
+        v_hospital_is_available > 0
         then
             return null;
         else

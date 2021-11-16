@@ -1,0 +1,144 @@
+-- создание пакета с логикой для больниц
+
+-- голова пакета:
+create or replace package lebedev_eg.hospital_paket
+as
+    -- функция возвращающая id частной больнице
+    function id_private_hospital
+    return number;
+
+    -- функция возвращающая id государственной больнице
+    function id_public_hospital
+    return number;
+
+    -- функция возвращающая значение об удаленности больници по ее id
+    function hospital_is_deleted_by_id_as_func(p_id_hospital number)
+    return boolean;
+
+    -- функция возвращающая занечение об удаленности больнице по id талона
+    function hospital_is_deleted_by_talon_id_as_func(p_id_talon number)
+    return boolean;
+
+    -- фунция возвращающая курсор с больницами работающими по данной специальности
+    function select_hospital_on_speciality_as_func (
+        p_id_speciality number
+    )
+    return sys_refcursor;
+
+    -- функция возвращающая курсор с расписанием больниц
+    function select_hospital_timetable_as_func (
+        p_id_hosp number
+    )
+    return sys_refcursor;
+end;
+
+
+-- создание тела паета
+create or replace package body lebedev_eg.hospital_paket
+as
+    -- функция возвращающая id частной больнице
+    function id_private_hospital
+    return number
+    as
+        v_id_private_hospital number;
+    begin
+        select ht.id_hospital_tape
+            into v_id_private_hospital
+        from lebedev_eg.hospital_tape ht
+        where upper(ht.name_hospital_tape) = upper('частная');
+
+        return v_id_private_hospital;
+    end;
+
+    -- функция возвращающая id государственной больнице
+    function id_public_hospital
+    return number
+    as
+        v_id_public_hospital number;
+    begin
+        select ht.id_hospital_tape
+            into v_id_public_hospital
+        from lebedev_eg.hospital_tape ht
+        where upper(ht.name_hospital_tape) = upper('государственная');
+
+        return v_id_public_hospital;
+    end;
+
+    function hospital_is_deleted_by_id_as_func(
+        p_id_hospital number
+    )
+    return boolean
+    as
+        v_row_count number;
+    begin
+        select count(*)
+            into v_row_count
+        from lebedev_eg.hospital h
+        where h.id_hospital = p_id_hospital
+            and
+              h.deleted is null;
+
+        return v_row_count > 0;
+    end;
+
+    function hospital_is_deleted_by_talon_id_as_func(
+        p_id_talon number
+    )
+    return boolean
+    as
+        v_row_count number;
+    begin
+        select count(*)
+            into v_row_count
+        from lebedev_eg.doctor_timetable dt
+        inner join doctor d
+            on d.id_doctor = dt.id_doctor
+        inner join lebedev_eg.hospital h
+            on d.id_hospital = h.id_hospital
+        where dt.id_timetable = p_id_talon
+                and
+              h.deleted is null;
+
+
+    return v_row_count > 0;
+
+    end;
+
+    function select_hospital_on_speciality_as_func (
+        p_id_speciality number
+    )
+    return sys_refcursor
+    as
+        v_cursor_1 sys_refcursor;
+    begin
+        open v_cursor_1 for
+        select count(d.id_doctor) as count, h.name_hospital, ds.id_speciality,h.is_open  from hospital h
+        inner join lebedev_eg.doctor d
+        on h.id_hospital = d.id_hospital
+        inner join lebedev_eg.doctor_speciality ds
+        on ds.id_doctor = d.id_doctor
+        where ((p_id_speciality is null) or (ds.id_speciality = p_id_speciality)) and (h.deleted is null and d.deleted is null)
+        group by h.id_hospital, h.name_hospital,h.is_open,h.id_hospital_tape, ds.id_speciality
+        order by case when h.id_hospital_tape = lebedev_eg.hospital_paket.id_public_hospital
+                    then 0
+                    else 1
+                end desc,
+                 count(d.id_doctor) desc,
+                h.is_open desc;
+    return v_cursor_1;
+    end;
+
+    function select_hospital_timetable_as_func (
+        p_id_hosp number
+    )
+    return sys_refcursor
+    as
+        v_cursor sys_refcursor;
+    begin
+        open v_cursor for
+         select * from lebedev_eg.hospital_timetable ht
+            where p_id_hosp is null or  ht.id_hospital = p_id_hosp;
+
+    return v_cursor;
+    end;
+end;
