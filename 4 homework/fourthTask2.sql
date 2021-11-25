@@ -315,13 +315,17 @@ return varchar
 as
     v_error_message varchar(300) := null;
 begin
-    v_error_message := lebedev_eg.patient_not_registered_on_talon(
+    if lebedev_eg.patient_not_registered_on_talon(
         p_id_patient => p_id_patient,
-        p_id_talon => p_id_talon)
-    || lebedev_eg.patient_sex_equals_speciality_sex(
+        p_id_talon => p_id_talon) is not null then
+        raise lebedev_eg.EXCEPTIONS.PATIENT_ALREADY_REG;
+    end if;
+    if lebedev_eg.patient_sex_equals_speciality_sex(
         p_id_patient => p_id_patient,
-        p_id_talon => p_id_talon)
-    || lebedev_eg.patient_age_is_ok(
+        p_id_talon => p_id_talon) is not null then
+        raise lebedev_eg.EXCEPTIONS.PATIENT_SEX_NOT_EQUALS_SPECIALITY_SEX;
+    end if;
+    v_error_message := lebedev_eg.patient_age_is_ok(
         p_id_patient => p_id_patient,
         p_id_talon => p_id_talon)
     || lebedev_eg.talon_is_open_as_func(
@@ -381,6 +385,26 @@ begin
         else
             dbms_output.put_line(v_message);
     end if;
+
+    EXCEPTION
+        when LEBEDEV_EG.EXCEPTIONS.patient_already_reg then
+            LEBEDEV_EG.LOGS_PACKAGE.ADD_DEFAULT_LOG(P_OBJECT =>  $$plsql_unit_owner||'.'||$$plsql_unit,
+                p_value_json =>'Пользоваетль уже зарегистрирован',
+                P_SQLERRM => sqlerrm,
+                p_backtrace => DBMS_UTILITY.FORMAT_ERROR_BACKTRACE(),
+                p_tape => 'error');
+        when LEBEDEV_EG.EXCEPTIONS.PATIENT_SEX_NOT_EQUALS_SPECIALITY_SEX then
+            LEBEDEV_EG.LOGS_PACKAGE.ADD_DEFAULT_LOG(P_OBJECT =>  $$plsql_unit_owner||'.'||$$plsql_unit,
+                p_value_json =>'Пол пациента не совпадает с полом специальности',
+                P_SQLERRM => sqlerrm,
+                p_backtrace => DBMS_UTILITY.FORMAT_ERROR_BACKTRACE(),
+                p_tape => 'error');
+        when others then
+            LEBEDEV_EG.LOGS_PACKAGE.ADD_DEFAULT_LOG(P_OBJECT =>  $$plsql_unit_owner||'.'||$$plsql_unit,
+                p_value_json =>'Ошибки',
+                P_SQLERRM => sqlerrm,
+                p_backtrace => DBMS_UTILITY.FORMAT_ERROR_BACKTRACE(),
+                p_tape => 'error');
 end;
 
 
