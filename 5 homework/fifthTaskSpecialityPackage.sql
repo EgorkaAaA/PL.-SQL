@@ -20,6 +20,23 @@ as
         p_id_talon number
     )
     return boolean;
+
+    -- функция проверяющая существует ли специальность
+    function speciality_exists (
+        p_id_speciality number
+    )
+    return boolean;
+
+    -- функция проверяющая существует ли возрастная группа
+    function age_group_exists (
+        p_id_age_group number
+    )
+    return boolean;
+
+    function get_speciality_tape_as_func (
+        p_id_speciality number
+    )
+    return lebedev_eg.t_speciality;
 end;
 
 create or replace package body lebedev_eg.speciality_package
@@ -77,6 +94,54 @@ as
         v_speciality := lebedev_eg.speciality_package.get_speciality_by_talon_id_as_func(p_id_talon);
 
         return v_speciality.deleted is null;
+    end;
+
+    function speciality_exists (
+        p_id_speciality number
+    )
+    return boolean
+    as
+        v_row_count number;
+    begin
+        select count(*)
+        into v_row_count
+        from lebedev_eg.speciality s
+        where s.id_speciality = p_id_speciality;
+
+        return v_row_count > 0;
+    end;
+
+    function age_group_exists (
+        p_id_age_group number
+    )
+    return boolean
+    as
+        v_row_count number;
+    begin
+        select count(*)
+        into v_row_count
+        from lebedev_eg.age_group ag
+        where ag.id_age_group = p_id_age_group;
+
+        return v_row_count > 0;
+    end;
+
+    function get_speciality_tape_as_func (
+        p_id_speciality number
+    )
+    return lebedev_eg.t_speciality
+    as
+        v_speciality lebedev_eg.t_speciality;
+    begin
+        select lebedev_eg.t_speciality(id_speciality => s.id_speciality,
+                                    name_speciality => s.name_speciality,
+                                    id_age_group => s.id_age_group,
+                                    deleted => s.deleted)
+        into v_speciality
+        from lebedev_eg.speciality s
+        where s.id_speciality = p_id_speciality;
+
+        return v_speciality;
     end;
 end;
 

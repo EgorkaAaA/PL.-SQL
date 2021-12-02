@@ -7,6 +7,32 @@ as
 
     patient_sex_not_equals_speciality_sex exception;
 
+    speciality_not_exists exception;
+
+    age_group_not_exists exception;
+
+    patient_not_exists exception;
+
+    sex_not_exists exception;
+
+    phone_number_not_valid exception;
+
+    document_not_exists exception;
+
+    doctor_not_exists exception;
+
+    hospital_not_exists exception;
+
+    medical_organization_not_exists exception;
+
+    hospital_tape_not_exists exception;
+
+    hospital_time_table_not_exist exception;
+
+    day_of_weak_not_exist exception;
+
+    talon_doctor_not_exist exception;
+
     -- Создаю тип массива для того чтобы возвращать его в фунции
     type array_of_logs is varray(500) of lebedev_eg.logs%rowtype;
 

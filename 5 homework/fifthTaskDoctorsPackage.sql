@@ -18,6 +18,16 @@ as
         p_id_doctor number
     )
     return sys_refcursor;
+
+    function doctor_is_exist_as_func(
+        p_id_doctor number
+    )
+    return boolean;
+
+    function get_doctor_type_as_func (
+        p_id_doctor number
+    )
+    return lebedev_eg.t_doctor;
 end;
 
 -- тело пакета:
@@ -76,5 +86,39 @@ as
               (dt.time_spaces_to < sysdate and dt.time_spaces_from < sysdate);
 
     return v_cursor;
+    end;
+
+    function doctor_is_exist_as_func(
+        p_id_doctor number
+    )
+    return boolean
+    as
+        v_row_count number;
+    begin
+        select count(*)
+        into v_row_count
+        from lebedev_eg.doctor d
+        where d.id_doctor = p_id_doctor;
+
+        return v_row_count > 0;
+    end;
+
+    function get_doctor_type_as_func (
+        p_id_doctor number
+    )
+    return lebedev_eg.t_doctor
+    as
+        v_doctor lebedev_eg.t_doctor;
+    begin
+        select lebedev_eg.t_doctor(id_doctor => d.id_doctor,
+                                id_hospital => d.id_hospital,
+                                area => d.area,
+                                qualification => d.qualification,
+                                deleted => d.deleted)
+        into v_doctor
+        from lebedev_eg.doctor d
+        where d.id_doctor = p_id_doctor;
+
+        return v_doctor;
     end;
 end;

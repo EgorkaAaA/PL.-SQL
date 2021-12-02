@@ -30,6 +30,26 @@ as
         p_id_hosp number
     )
     return sys_refcursor;
+
+    function hospital_is_exist_as_func (
+        p_id_hospital number
+    )
+    return boolean;
+
+    function medical_organization_is_exist_as_func (
+        p_id_medical_org number
+    )
+    return boolean;
+
+    function hospital_tape_is_exist_as_func (
+        p_id_hosp_tape number
+    )
+    return boolean;
+
+    function get_hospital_type_as_func (
+        p_id_hospital number
+    )
+    return lebedev_eg.t_hospital;
 end;
 
 
@@ -140,5 +160,70 @@ as
             where p_id_hosp is null or  ht.id_hospital = p_id_hosp;
 
     return v_cursor;
+    end;
+
+    function hospital_is_exist_as_func (
+        p_id_hospital number
+    )
+    return boolean
+    as
+        v_row_count number;
+    begin
+        select count(*)
+        into v_row_count
+        from lebedev_eg.hospital h
+        where h.id_hospital = p_id_hospital;
+
+        return v_row_count > 0;
+    end;
+
+    function medical_organization_is_exist_as_func (
+        p_id_medical_org number
+    )
+    return boolean
+    as
+        v_row_count number;
+    begin
+        select count(*)
+        into v_row_count
+        from lebedev_eg.medical_organization mo
+        where mo.id_medical_organization = p_id_medical_org;
+
+        return v_row_count > 0;
+    end;
+
+    function hospital_tape_is_exist_as_func (
+        p_id_hosp_tape number
+    )
+    return boolean
+    as
+        v_row_count number;
+    begin
+        select count(*)
+        into v_row_count
+        from lebedev_eg.hospital_tape hp
+        where hp.id_hospital_tape = p_id_hosp_tape;
+
+        return v_row_count > 0;
+    end;
+
+    function get_hospital_type_as_func (
+        p_id_hospital number
+    )
+    return lebedev_eg.t_hospital
+    as
+        v_hospital lebedev_eg.t_hospital;
+    begin
+        select lebedev_eg.t_hospital(id_hospital => h.id_hospital,
+            name_hospital => h.name_hospital,
+            is_open => h.is_open,
+            id_medical_organization => h.id_medical_organization,
+            id_hospital_tape => h.id_hospital_tape,
+            deleted => h.deleted)
+        into v_hospital
+        from lebedev_eg.hospital h
+        where h.id_hospital = p_id_hospital;
+
+        return v_hospital;
     end;
 end;

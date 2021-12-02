@@ -39,6 +39,16 @@ as
         p_id_patient number
     )
     return boolean;
+
+    function patient_exists_as_func (
+        p_id_patient number
+    )
+    return boolean;
+
+    function get_patient_type_as_func (
+        p_id_patient number
+    )
+    return lebedev_eg.t_patient;
 end;
 
 -- тело пакета:
@@ -173,6 +183,43 @@ as
               pd.id_document = lebedev_eg.patient_package.id_oms;
 
         return v_row_count > 0;
+    end;
+
+    function patient_exists_as_func (
+        p_id_patient number
+    )
+    return boolean
+    as
+        v_row_count number;
+    begin
+        select count(*)
+        into v_row_count
+        from lebedev_eg.patient
+        where id_patient = p_id_patient;
+
+        return v_row_count > 0;
+    end;
+
+    function get_patient_type_as_func (
+        p_id_patient number
+    )
+    return lebedev_eg.t_patient
+    as
+        v_patient lebedev_eg.t_patient;
+    begin
+        select lebedev_eg.t_patient(id_patient => p.id_patient,
+                                surname => p.surname,
+                                name => p.name,
+                                patronumic => p.patronymic,
+                                id_sex => p.id_sex,
+                                phone => p.phone,
+                                area => p.area,
+                                birthday => p.birthday)
+        into v_patient
+        from lebedev_eg.patient p
+        where p.id_patient = p_id_patient;
+
+        return v_patient;
     end;
 end;
 
