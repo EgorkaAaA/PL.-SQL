@@ -50,6 +50,15 @@ as
         p_id_hospital number
     )
     return lebedev_eg.t_hospital;
+
+    function repository_get_hospitals (
+        out_result out number
+    )
+    return clob;
+
+    procedure insert_hospital (
+        p_hospital_from_antonov lebedev_eg.T_ARR_HOSPITAL_FROM_API_ATONOV
+    );
 end;
 
 
@@ -225,5 +234,71 @@ as
         where h.id_hospital = p_id_hospital;
 
         return v_hospital;
+    end;
+
+    function repository_get_hospitals (
+        out_result out number
+    )
+    return clob
+    as
+        v_success boolean;
+        v_code number;
+        v_clob clob;
+
+    begin
+        v_clob := lebedev_eg.http_fetch(
+            p_url => 'http://virtserver.swaggerhub.com/AntonovAD/DoctorDB/1.0.0/hospitals',
+            p_debug => true,
+            out_success => v_success,
+            out_code => v_code
+        );
+
+        out_result := case when v_success
+            then lebedev_eg.exceptions.c_ok
+            else lebedev_eg.exceptions.c_error
+        end;
+
+        return v_clob;
+    end;
+
+    procedure insert_hospital (
+        p_hospital_from_antonov lebedev_eg.T_ARR_HOSPITAL_FROM_API_ATONOV
+    )
+    as
+    begin
+        merge into lebedev_eg.HOSPITAL origin
+        using (
+            select ID_HOSPITAL,
+                   ADDRESS,
+                   name,
+                   id_town
+            from table ( p_hospital_from_antonov )
+        ) new
+         on ( origin.ID_OTHER_API = new.ID_HOSPITAL)
+        when matched then
+            update set
+                origin.ADDRESS = new.ADDRESS,
+                origin.NAME_HOSPITAL = new.NAME,
+                origin.id_town_from_api = new.id_town
+        when not matched then
+            insert (
+                    NAME_HOSPITAL,
+                    IS_OPEN,
+                    ID_MEDICAL_ORGANIZATION,
+                    ID_HOSPITAL_TAPE,
+                    ID_OTHER_API,
+                    ADDRESS,
+                    ID_TOWN_FROM_API
+            )
+            values (
+                    new.NAME,
+                    1,
+                    1,
+                    1,
+                    new.ID_HOSPITAL,
+                    new.ADDRESS,
+                    new.id_town
+                   );
+
     end;
 end;

@@ -13,6 +13,10 @@ as
     p_area number)
     return sys_refcursor;
 
+    procedure insert_doctor (
+        p_doctor lebedev_eg.t_arr_doctor_from_api_antonov
+    );
+
     -- функция возвращающая курсор, который содержит в себе активные талоны определенного доктора
     function select_talon_on_doctor_active_date_as_func (
         p_id_doctor number
@@ -28,6 +32,11 @@ as
         p_id_doctor number
     )
     return lebedev_eg.t_doctor;
+
+    function repository_get_doctors (
+        out_result out number
+    )
+    return clob;
 end;
 
 -- тело пакета:
@@ -120,5 +129,70 @@ as
         where d.id_doctor = p_id_doctor;
 
         return v_doctor;
+    end;
+
+    function repository_get_doctors(
+        out_result out number
+    )
+    return clob
+    as
+        v_success boolean;
+        v_code number;
+        v_clob clob;
+
+    begin
+        v_clob := lebedev_eg.http_fetch(
+            p_url => 'http://virtserver.swaggerhub.com/AntonovAD/DoctorDB/1.0.0/doctors',
+            p_debug => true,
+            out_success => v_success,
+            out_code => v_code
+        );
+
+        out_result := case when v_success
+            then lebedev_eg.exceptions.c_ok
+            else lebedev_eg.exceptions.c_error
+        end;
+
+        return v_clob;
+
+    end;
+
+    procedure insert_doctor (
+        p_doctor lebedev_eg.t_arr_doctor_from_api_antonov
+    )
+    as
+    begin
+        merge into lebedev_eg.doctor d
+        using (
+            select
+                id_doctor,
+                lname,
+                fname,
+                mname,
+                id_hospital
+                from table ( p_doctor )
+        ) pd
+            on (d.id_from_other_api = pd.id_doctor)
+        when matched then
+            update set
+            d.secondname = pd.lname,
+            d.firstname = pd.fname,
+            d.surname = pd.mname,
+            d.id_hospital = pd.id_hospital
+        when not matched then
+            insert (id_hospital,
+                    area,
+                    qualification,
+                    surname,
+                    firstname,
+                    secondname,
+                    id_from_other_api)
+            values (pd.id_hospital,
+                    1,
+                    '1',
+                    pd.fname,
+                    pd.fname,
+                    pd.mname,
+                    pd.id_doctor);
     end;
 end;

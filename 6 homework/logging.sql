@@ -8,7 +8,7 @@ create table lebedev_eg.logs
     sh_user varchar2(500) default user,
     sh_object varchar2(500) not null,
     tape varchar2(500) not null,
-    value_json varchar2(500) not null
+    value_json varchar(1000) not null
 )
 -- секционирование
 partition by range (date_log)

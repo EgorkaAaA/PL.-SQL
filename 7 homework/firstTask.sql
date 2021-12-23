@@ -98,3 +98,9 @@ create or replace type lebedev_eg.t_extended_hospital as object (
     hospital_timetable lebedev_eg.t_hospital_time_table
                                                             );
 
+create or replace type lebedev_eg.t_extended_doctor as object (
+    doctor lebedev_eg.T_DOCTOR,
+    doctor_from_api lebedev_eg.T_DOCTOR_FROM_API_ANTONOV
+                                                              );
+
+create or replace type t_arr_extended_doctor as table of lebedev_eg.T_EXTENDED_DOCTOR;

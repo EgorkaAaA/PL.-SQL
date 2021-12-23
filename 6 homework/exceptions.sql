@@ -33,6 +33,10 @@ as
 
     talon_doctor_not_exist exception;
 
+    c_ok constant number := 1;
+
+    c_error constant number := 0;
+
     -- Создаю тип массива для того чтобы возвращать его в фунции
     type array_of_logs is varray(500) of lebedev_eg.logs%rowtype;
 
